@@ -76,6 +76,7 @@ const onOk = () => {
     "set-window-attr",
     unref({ ...formValues.value, index: props.windowIndex })
   );
+  // window.ipcRenderer.send("setting-change", props.windowIndex);
 };
 
 onMounted(() => {
@@ -90,6 +91,10 @@ onMounted(() => {
     if (event.data === "BOTTLE_OPEN_SETTINGS_MODAL") {
       // 执行打开设置模态框的操作
       visible.value = true;
+    }
+    //定时关闭窗口切换
+    if(event.data === "SWITCH_DISABLE"){
+      formValues.value.setAlwaysOnTop = true
     }
   });
 });
