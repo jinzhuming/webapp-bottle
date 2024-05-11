@@ -79,17 +79,14 @@ const onOk = () => {
 };
 
 onMounted(() => {
-  // 接受主窗口打开事件
-  window.ipcRenderer.on("open-setting-modal", () => {
+    // 接受主窗口打开事件
+    window.ipcRenderer.on("open-setting-modal", () => {
     visible.value = true;
   });
-  window.addEventListener("message", function (event) {
-    // 检查消息来源是否为子窗口
-    if (event.source !== window) {
-      return;
-    }
 
-    // 检查消息类型是否为 'BOTTLE_OPEN_SETTINGS_MODAL'
+  // 和iframe 通信
+  window.addEventListener("message", function (event) {
+    // 检查消息类型是否为可设置
     if (event.data === "BOTTLE_OPEN_SETTINGS_MODAL") {
       // 执行打开设置模态框的操作
       visible.value = true;
@@ -98,7 +95,6 @@ onMounted(() => {
 });
 
 watch(
-  () => store.settingsModal[props.windowIndex],
   () => {
     formValues.value = (store.settingsModal[props.windowIndex] ?? {}) as any;
   },

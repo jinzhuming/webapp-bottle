@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import os from "node:os";
 import { globalShortcut } from "electron";
+
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -21,6 +22,8 @@ process.env.APP_ROOT = path.join(__dirname, "../..");
 export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL;
+
+
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
@@ -58,7 +61,7 @@ async function createWindow() {
         icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
         webPreferences: {
           preload,
-          // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
+          // Warning: Enable nodeIntegration and disable conte`xtIsolation is not secure in production
           // nodeIntegration: true,
 
           // Consider using contextBridge.exposeInMainWorld
@@ -110,6 +113,7 @@ async function createWindow() {
     });
   });
 
+    // 发送消息给页面
   globalShortcut.register("CommandOrControl + shift + k", () => {
     // 在这里执行你想要的操作，例如剪切文本
     wins?.[0]?.webContents.send("open-url-setting-modal");
@@ -127,6 +131,11 @@ async function createWindow() {
       win.setResizable(dataMap["setResizable"]); // Prevent resizing
       win.setMovable(dataMap["setMovable"]); // Prevent moving
       win.setFullScreen(dataMap["setFullScreen"]);
+      win.setFocusable(true);
+      
+
+      
+
     });
   });
 

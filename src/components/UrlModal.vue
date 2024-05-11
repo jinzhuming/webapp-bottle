@@ -9,8 +9,15 @@
         label="url"
         name="url">
         <Input
-          placeholder="访问地址"
+          placeholder="主屏访问地址"
           v-model:value="formValues['url']"></Input>
+      </FormItem>
+      <FormItem
+        label="subUrl"
+        name="subUrl">
+        <Input
+          placeholder="副屏访问地址"
+          v-model:value="formValues['subUrl']"></Input>
       </FormItem>
     </Form>
   </Modal>
@@ -27,24 +34,36 @@ const store = useUrlModalStore();
 const modalVisible = ref(false);
 
 onMounted(() => {
+    // 接受壳子的消息传递
   window.ipcRenderer.on("open-url-setting-modal", () => {
     modalVisible.value = true;
+  });
+    // 和iframe 通信
+  window.addEventListener("message", function (event) {
+    // 检查消息类型是否为可设置
+    if (event.data === "BOTTLE_OPEN_URL_MODAL") {
+      // 执行打开设置模态框的操作
+      modalVisible.value = true;
+    }
   });
 });
 
 const onOk = () => {
   store.url = formValues.value.url;
+  store.subUrl = formValues.value.subUrl;
   modalVisible.value = false;
 };
 
 const formValues = ref<{
   url: string;
+  subUrl: string;
 }>({} as any);
 
 watch(
   () => store.url,
   () => {
     formValues.value.url = store.url;
+    formValues.value.subUrl = store.subUrl;
   },
   { immediate: true }
 );

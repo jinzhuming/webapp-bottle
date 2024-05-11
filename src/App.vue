@@ -25,9 +25,9 @@ window.ipcRenderer.on("current-window-index", (e, index) => {
 
     <!-- <img class="loading" src="./loading.gif" alt=""></div> -->
     <iframe
-      v-if="urlStore.url"
-      :key="urlStore.url"
-      :src="urlStore.url"
+      v-if="urlStore.url && urlStore.subUrl"
+      :key="urlStore.url+urlStore.subUrl"
+      :src="windowIndex === 0 ?urlStore.url :urlStore.subUrl"
       allowfullscreen
       allowpaymentrequest
       allowtransparency></iframe>

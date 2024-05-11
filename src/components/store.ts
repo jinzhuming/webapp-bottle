@@ -13,7 +13,8 @@ export const useUrlModalStore = defineStore(
   "urlModalStore",
   () => {
     const url = ref("");
-    return { url };
+    const subUrl = ref("");
+    return { url,subUrl };
   },
   { persist: true }
 );
