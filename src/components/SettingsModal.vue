@@ -45,7 +45,7 @@
 
 <script lang="ts" setup>
 import { Form, Modal, RadioGroup, Radio, FormItem } from "ant-design-vue";
-import { ref, unref } from "vue";
+import { onMounted, ref, unref } from "vue";
 import { useSettingsModalStore } from "./store";
 import { watch } from "vue";
 
@@ -72,10 +72,29 @@ const onChange = () => {
 
 const onOk = () => {
   visible.value = false;
-  window.ipcRenderer.invoke("set-window-attr", unref({ ...formValues.value }));
+  window.ipcRenderer.invoke(
+    "set-window-attr",
+    unref({ ...formValues.value, index: props.windowIndex })
+  );
 };
-window.ipcRenderer.on("open-setting-modal", () => {
-  visible.value = true;
+
+onMounted(() => {
+  // 接受主窗口打开事件
+  window.ipcRenderer.on("open-setting-modal", () => {
+    visible.value = true;
+  });
+  window.addEventListener("message", function (event) {
+    // 检查消息来源是否为子窗口
+    if (event.source !== window) {
+      return;
+    }
+
+    // 检查消息类型是否为 'BOTTLE_OPEN_SETTINGS_MODAL'
+    if (event.data === "BOTTLE_OPEN_SETTINGS_MODAL") {
+      // 执行打开设置模态框的操作
+      visible.value = true;
+    }
+  });
 });
 
 watch(

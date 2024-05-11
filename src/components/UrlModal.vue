@@ -3,7 +3,7 @@
     :open="modalVisible"
     title="URL 配置"
     @cancel="modalVisible = false"
-    @ok="modalVisible = false">
+    @ok="onOk">
     <Form :mode="formValues">
       <FormItem
         label="url"
@@ -31,6 +31,11 @@ onMounted(() => {
     modalVisible.value = true;
   });
 });
+
+const onOk = () => {
+  store.url = formValues.value.url;
+  modalVisible.value = false;
+};
 
 const formValues = ref<{
   url: string;

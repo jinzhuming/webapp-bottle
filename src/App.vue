@@ -5,7 +5,6 @@ import SettingsModal from "./components/SettingsModal.vue";
 import { useUrlModalStore } from "./components/store";
 import UrlModal from "./components/UrlModal.vue";
 const urlStore = useUrlModalStore();
-const modalVisible = ref(false);
 const windowIndex = ref<number>(0);
 
 // 监听来自主进程的消息
@@ -24,7 +23,6 @@ window.ipcRenderer.on("current-window-index", (e, index) => {
 
     <UrlModal :windowIndex="windowIndex"></UrlModal>
 
-    {{ modalVisible }}
     <!-- <img class="loading" src="./loading.gif" alt=""></div> -->
     <iframe
       v-if="urlStore.url"

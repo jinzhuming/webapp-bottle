@@ -121,7 +121,8 @@ async function createWindow() {
 
   ipcMain.handle("set-window-attr", (_, dataMap) => {
     if (!dataMap) return;
-    wins.forEach((win) => {
+    wins.forEach((win, winIndex) => {
+      if (winIndex !== dataMap.index) return;
       win.setAlwaysOnTop(dataMap["setAlwaysOnTop"], "screen-saver"); // Keep on top of other windows
       win.setResizable(dataMap["setResizable"]); // Prevent resizing
       win.setMovable(dataMap["setMovable"]); // Prevent moving
