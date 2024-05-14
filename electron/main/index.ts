@@ -23,8 +23,6 @@ export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL;
 
-
-
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
@@ -46,11 +44,16 @@ const indexHtml = path.join(RENDERER_DIST, "index.html");
 
 async function createWindow() {
   // 移动到非主显示器
-  const displays = screen.getAllDisplays();
-  // bounds.x 是 0 就是主显示器
-  // const externalDisplays = displays.filter((display) => {
-  //   return display.bounds.x !== 0 || display.bounds.y !== 0;
-  // });
+  const displays = screen.getAllDisplays().sort((a, b) => {
+    if (a.bounds.x === 0) {
+      return -1; // a 是主显示器，排在前面
+    } else if (b.bounds.x === 0) {
+      return 1; // b 是主显示器，排在前面
+    } else {
+      return 0; // 其他情况，维持原顺序
+    }
+  });
+
   const externalDisplays = displays;
 
   for (let i = 0; i < externalDisplays.length; i++) {
@@ -61,12 +64,6 @@ async function createWindow() {
         icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
         webPreferences: {
           preload,
-          // Warning: Enable nodeIntegration and disable conte`xtIsolation is not secure in production
-          // nodeIntegration: true,
-
-          // Consider using contextBridge.exposeInMainWorld
-          // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-          // contextIsolation: false,
         },
       })
     );
@@ -80,19 +77,18 @@ async function createWindow() {
       width: externalDisplay.bounds.width,
       height: externalDisplay.bounds.height,
     });
-    // win.setAlwaysOnTop(true, "screen-saver"); // Keep on top of other windows
-    // win.setResizable(false); // Prevent resizing
-    // win.setMovable(false); // Prevent moving
-    // win.setFullScreen(true);
 
-    if (i === 1) {
-      // Second window settings
-      // win.setAlwaysOnTop(true, "screen-saver");
-      // win.setResizable(false);
-      // win.setMovable(false);
-      // win.setFullScreen(true);
-      // win.setFocusable(false);
-    }
+    win.on("blur", () => {
+      // 检查是否其他窗口拥有焦点
+      let hasFocus = wins.some((w, index) => index !== 0 && w.isFocused());
+
+      // 如果没有其他窗口拥有焦点，则将焦点切换回主窗口
+      if (!hasFocus) {
+        wins[0].show();
+        wins[0].focus();
+      }
+    });
+
     if (VITE_DEV_SERVER_URL) {
       // #298
       win.loadURL(VITE_DEV_SERVER_URL);
@@ -113,7 +109,7 @@ async function createWindow() {
     });
   });
 
-    // 发送消息给页面
+  // 发送消息给页面
   globalShortcut.register("CommandOrControl + shift + k", () => {
     // 在这里执行你想要的操作，例如剪切文本
     wins?.[0]?.webContents.send("open-url-setting-modal");
@@ -121,8 +117,8 @@ async function createWindow() {
   globalShortcut.register("CommandOrControl + shift + p", () => {
     // 在这里执行你想要的操作，例如剪切文本
     wins?.[0]?.webContents.send("open-setting-modal");
-  });  
-  
+  });
+
   ipcMain.handle("set-window-attr", (_, dataMap) => {
     if (!dataMap) return;
     wins.forEach((win, winIndex) => {
@@ -132,19 +128,13 @@ async function createWindow() {
       win.setMovable(dataMap["setMovable"]); // Prevent moving
       win.setFullScreen(dataMap["setFullScreen"]);
       win.setFocusable(true);
-      
-
-      
-
     });
   });
-
-  // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-ipcMain.handle("setting-change", (_,val) => { 
-   wins?.[0]?.webContents.send('setting-change',val)
-})
+ipcMain.handle("setting-change", (_, val) => {
+  wins?.[0]?.webContents.send("setting-change", val);
+});
 
 app.whenReady().then(createWindow);
 

@@ -34,11 +34,11 @@ const store = useUrlModalStore();
 const modalVisible = ref(false);
 
 onMounted(() => {
-    // 接受壳子的消息传递
+  // 接受壳子的消息传递
   window.ipcRenderer.on("open-url-setting-modal", () => {
     modalVisible.value = true;
   });
-    // 和iframe 通信
+  // 和iframe 通信
   window.addEventListener("message", function (event) {
     // 检查消息类型是否为可设置
     if (event.data === "BOTTLE_OPEN_URL_MODAL") {
@@ -46,6 +46,11 @@ onMounted(() => {
       modalVisible.value = true;
     }
   });
+
+  // 如果没有设置任何默认地址，弹窗设置
+  if (!store.url || !store.subUrl) {
+    modalVisible.value = true;
+  }
 });
 
 const onOk = () => {

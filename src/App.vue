@@ -8,7 +8,7 @@ const urlStore = useUrlModalStore();
 const windowIndex = ref<number>(0);
 
 const myIframe = ref<HTMLDivElement | null>(null);
-  
+
 // 监听来自主进程的消息
 window.ipcRenderer.on("current-window-index", (e, index) => {
   if (typeof index === "number") {
@@ -19,9 +19,11 @@ window.ipcRenderer.on("current-window-index", (e, index) => {
 });
 window.ipcRenderer.on("setting-change", (_, e) => {
   // @ts-ignore
-  myIframe.value?.contentWindow.postMessage(JSON.stringify({...e,order:"SETTING_CHANGE_SUCCESS"}),"*")
+  myIframe.value?.contentWindow.postMessage(
+    JSON.stringify({ ...e, order: "SETTING_CHANGE_SUCCESS" }),
+    "*"
+  );
 });
-
 </script>
 
 <template>
@@ -30,12 +32,11 @@ window.ipcRenderer.on("setting-change", (_, e) => {
 
     <UrlModal :windowIndex="windowIndex"></UrlModal>
 
-    <!-- <img class="loading" src="./loading.gif" alt=""></div> -->
     <iframe
-    ref="myIframe"
+      ref="myIframe"
       v-if="urlStore.url && urlStore.subUrl"
-      :key="urlStore.url+urlStore.subUrl"
-      :src="windowIndex === 0 ?urlStore.url :urlStore.subUrl"
+      :key="urlStore.url + urlStore.subUrl"
+      :src="windowIndex === 0 ? urlStore.url : urlStore.subUrl"
       allowfullscreen
       allowpaymentrequest
       allowtransparency></iframe>
