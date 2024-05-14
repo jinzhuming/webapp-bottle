@@ -23,14 +23,14 @@
           <Radio :value="false">否</Radio>
         </RadioGroup>
       </FormItem>
-      <FormItem
+      <!-- <FormItem
         label="是否可以移动"
         name="setMovable">
         <RadioGroup v-model:value="formValues['setMovable']">
           <Radio :value="true">是</Radio>
           <Radio :value="false">否</Radio>
         </RadioGroup>
-      </FormItem>
+      </FormItem> -->
       <FormItem
         label="是否全屏"
         name="setFullScreen">
@@ -76,15 +76,12 @@ const onOk = () => {
     "set-window-attr",
     unref({ ...formValues.value, index: props.windowIndex })
   );
-  window.ipcRenderer.invoke(
-    "setting-change",
-    unref({ ...formValues.value })
-  );
+  window.ipcRenderer.invoke("setting-change", unref({ ...formValues.value }));
 };
 
 onMounted(() => {
-    // 接受主窗口打开事件
-    window.ipcRenderer.on("open-setting-modal", () => {
+  // 接受主窗口打开事件
+  window.ipcRenderer.on("open-setting-modal", () => {
     visible.value = true;
   });
 
@@ -96,14 +93,17 @@ onMounted(() => {
       visible.value = true;
     }
     //定时关闭窗口切换
-    if(event.data === "SWITCH_DISABLE"){
-      formValues.value.setAlwaysOnTop = true
+    if (event.data === "SWITCH_DISABLE") {
+      formValues.value.setAlwaysOnTop = true;
     }
   });
 });
 
-
-onMounted(() => { 
+onMounted(() => {
   formValues.value = (store.settingsModal[props.windowIndex] ?? {}) as any;
-})
+  window.ipcRenderer.invoke(
+    "set-window-attr",
+    unref({ ...formValues.value, index: props.windowIndex })
+  );
+});
 </script>

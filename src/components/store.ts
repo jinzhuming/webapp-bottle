@@ -4,7 +4,12 @@ import { ref } from "vue";
 export const useSettingsModalStore = defineStore(
   "settingsModalStore",
   () => {
-    const settingsModal = ref<Record<string, boolean>>({});
+    const settingsModal = ref<Record<string, boolean>>({
+      setAlwaysOnTop: true,
+      setMovable: false,
+      setFullScreen: true,
+      setResizable: true,
+    });
     return { settingsModal };
   },
   { persist: true }
@@ -14,7 +19,7 @@ export const useUrlModalStore = defineStore(
   () => {
     const url = ref("");
     const subUrl = ref("");
-    return { url,subUrl };
+    return { url, subUrl };
   },
   { persist: true }
 );
