@@ -17,7 +17,8 @@ window.ipcRenderer.on("current-window-index", (e, index) => {
     windowIndex.value = 0;
   }
 });
-window.ipcRenderer.on("setting-change", (_,e) => {
+window.ipcRenderer.on("setting-change", (_, e) => {
+  // @ts-ignore
   myIframe.value?.contentWindow.postMessage(JSON.stringify({...e,order:"SETTING_CHANGE_SUCCESS"}),"*")
 });
 

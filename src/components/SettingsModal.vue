@@ -102,10 +102,8 @@ onMounted(() => {
   });
 });
 
-watch(
-  () => {
-    formValues.value = (store.settingsModal[props.windowIndex] ?? {}) as any;
-  },
-  { immediate: true }
-);
+
+onMounted(() => { 
+  formValues.value = (store.settingsModal[props.windowIndex] ?? {}) as any;
+})
 </script>
