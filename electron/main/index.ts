@@ -109,15 +109,13 @@ async function createWindow() {
     });
   });
 
-  // 发送消息给页面
-  globalShortcut.register("CommandOrControl + shift + k", () => {
-    // 在这里执行你想要的操作，例如剪切文本
-    wins?.[0]?.webContents.send("open-url-setting-modal");
-  });
-  globalShortcut.register("CommandOrControl + shift + p", () => {
-    // 在这里执行你想要的操作，例如剪切文本
-    wins?.[0]?.webContents.send("open-setting-modal");
-  });
+  // // 发送消息给页面
+  // globalShortcut.register("CommandOrControl + shift + k", () => {
+  //   wins?.[0]?.webContents.send("open-url-setting-modal");
+  // });
+  // globalShortcut.register("CommandOrControl + shift + p", () => {
+  //   wins?.[0]?.webContents.send("open-setting-modal");
+  // });
 
   ipcMain.handle("set-window-attr", (_, dataMap) => {
     if (!dataMap) return;
@@ -177,4 +175,17 @@ ipcMain.handle("open-win", (_, arg) => {
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
   }
+});
+// 注册 Super 键的全局快捷键
+globalShortcut.register("Super", () => {
+  // 阻止默认行为
+  console.log("Super key pressed, but default action is prevented.");
+  wins?.[0]?.show();
+  wins?.[0]?.focus();
+});
+
+// 在应用退出时注销快捷键
+app.on("will-quit", () => {
+  globalShortcut.unregister("Super");
+  globalShortcut.unregisterAll();
 });
