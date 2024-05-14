@@ -121,8 +121,8 @@ async function createWindow() {
   globalShortcut.register("CommandOrControl + shift + p", () => {
     // 在这里执行你想要的操作，例如剪切文本
     wins?.[0]?.webContents.send("open-setting-modal");
-  });
-
+  });  
+  
   ipcMain.handle("set-window-attr", (_, dataMap) => {
     if (!dataMap) return;
     wins.forEach((win, winIndex) => {
@@ -141,6 +141,10 @@ async function createWindow() {
 
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
+
+ipcMain.handle("setting-change", (_,val) => { 
+   wins?.[0]?.webContents.send('setting-change',val)
+})
 
 app.whenReady().then(createWindow);
 

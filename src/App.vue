@@ -7,6 +7,8 @@ import UrlModal from "./components/UrlModal.vue";
 const urlStore = useUrlModalStore();
 const windowIndex = ref<number>(0);
 
+const myIframe = ref<HTMLDivElement | null>(null);
+  
 // 监听来自主进程的消息
 window.ipcRenderer.on("current-window-index", (e, index) => {
   if (typeof index === "number") {
@@ -15,6 +17,10 @@ window.ipcRenderer.on("current-window-index", (e, index) => {
     windowIndex.value = 0;
   }
 });
+window.ipcRenderer.on("setting-change", (_,e) => {
+  myIframe.value?.contentWindow.postMessage(JSON.stringify({...e,order:"SETTING_CHANGE_SUCCESS"}),"*")
+});
+
 </script>
 
 <template>
@@ -25,6 +31,7 @@ window.ipcRenderer.on("current-window-index", (e, index) => {
 
     <!-- <img class="loading" src="./loading.gif" alt=""></div> -->
     <iframe
+    ref="myIframe"
       v-if="urlStore.url && urlStore.subUrl"
       :key="urlStore.url+urlStore.subUrl"
       :src="windowIndex === 0 ?urlStore.url :urlStore.subUrl"

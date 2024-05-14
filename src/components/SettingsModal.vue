@@ -76,7 +76,10 @@ const onOk = () => {
     "set-window-attr",
     unref({ ...formValues.value, index: props.windowIndex })
   );
-  // window.ipcRenderer.send("setting-change", props.windowIndex);
+  window.ipcRenderer.invoke(
+    "setting-change",
+    unref({ ...formValues.value })
+  );
 };
 
 onMounted(() => {
