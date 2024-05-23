@@ -119,12 +119,11 @@ async function createWindow() {
 
   ipcMain.handle("set-window-attr", (_, dataMap) => {
     if (!dataMap) return;
-    wins.forEach((win, winIndex) => {
-      if (winIndex !== dataMap.index) return;
-      win.setAlwaysOnTop(dataMap["setAlwaysOnTop"], "screen-saver"); // Keep on top of other windows
-      win.setResizable(dataMap["setResizable"]); // Prevent resizing
-      win.setMovable(dataMap["setMovable"]); // Prevent moving
-      win.setFullScreen(dataMap["setFullScreen"]);
+    wins.forEach((win) => {
+      win.setAlwaysOnTop(dataMap["setAlwaysOnTop"], "screen-saver", 1); // Keep on top of other windows
+      win.setResizable(dataMap["setResizable"] ?? false); // Prevent resizing
+      win.setMovable(dataMap["setMovable"] ?? false); // Prevent moving
+      win.setFullScreen(dataMap["setFullScreen"] ?? true);
       win.setFocusable(true);
     });
   });
@@ -177,12 +176,12 @@ ipcMain.handle("open-win", (_, arg) => {
   }
 });
 // 注册 Super 键的全局快捷键
-globalShortcut.register("Super", () => {
-  // 阻止默认行为
-  console.log("Super key pressed, but default action is prevented.");
-  wins?.[0]?.show();
-  wins?.[0]?.focus();
-});
+// globalShortcut.register("Super", () => {
+//   // 阻止默认行为
+//   console.log("Super key pressed, but default action is prevented.");
+//   wins?.[0]?.show();
+//   wins?.[0]?.focus();
+// });
 
 // 在应用退出时注销快捷键
 app.on("will-quit", () => {
