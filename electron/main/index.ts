@@ -114,12 +114,12 @@ async function createWindow() {
   });
 
   // // 发送消息给页面
-  // globalShortcut.register("CommandOrControl + shift + k", () => {
-  //   wins?.[0]?.webContents.send("open-url-setting-modal");
-  // });
-  // globalShortcut.register("CommandOrControl + shift + p", () => {
-  //   wins?.[0]?.webContents.send("open-setting-modal");
-  // });
+  globalShortcut.register("CommandOrControl + shift + k", () => {
+    wins?.[0]?.webContents.send("open-url-setting-modal");
+  });
+  globalShortcut.register("CommandOrControl + shift + p", () => {
+    wins?.[0]?.webContents.send("open-setting-modal");
+  });
 
   ipcMain.handle("set-window-attr", (_, dataMap) => {
     if (!dataMap) return;
