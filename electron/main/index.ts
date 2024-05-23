@@ -77,6 +77,10 @@ async function createWindow() {
       width: externalDisplay.bounds.width,
       height: externalDisplay.bounds.height,
     });
+    win.setMenu(null);
+    win.on("leave-full-screen", (event) => {
+      event.preventDefault();
+    });
 
     win.on("blur", () => {
       // 检查是否其他窗口拥有焦点
@@ -167,6 +171,8 @@ ipcMain.handle("open-win", (_, arg) => {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    frame: false, // 或者 titleBarStyle: 'hidden'
+    titleBarStyle: "hidden",
   });
 
   if (VITE_DEV_SERVER_URL) {
