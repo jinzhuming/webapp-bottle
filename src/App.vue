@@ -4,9 +4,13 @@ import { Modal } from "ant-design-vue";
 import SettingsModal from "./components/SettingsModal.vue";
 import { useUrlModalStore } from "./components/store";
 import UrlModal from "./components/UrlModal.vue";
+import Loading from './components/Loading.vue'
 const urlStore = useUrlModalStore();
 const windowIndex = ref<number>(0);
 const iframeKey = ref<number>(0)
+const loading = ref<boolean>(true)
+const timer = ref()
+const showLoading = ref(true)
 
 const myIframe = ref<HTMLDivElement | null>(null);
 
@@ -29,10 +33,22 @@ window.addEventListener('message', function (event){
   if (event.data === 'REFRESH_IFRAME') { 
   window.ipcRenderer.invoke("refresh");
   }
+  if (event.data === 'ONMOUNTED') { 
+    timer.value &&  clearInterval(timer.value);
+  }
+  if (event.data === 'LOADING_OVER') { 
+    showLoading.value = false
+  }
 })
 window.ipcRenderer.on("refresh", (_, e) => {
   iframeKey.value++
 })
+
+
+
+timer.value = setInterval(() => { 
+  iframeKey.value++
+},2000)
 
 
 </script>
@@ -40,10 +56,10 @@ window.ipcRenderer.on("refresh", (_, e) => {
 <template>
   <div class="container">
     <SettingsModal  :windowIndex="windowIndex"></SettingsModal>
-
     <UrlModal :windowIndex="windowIndex"></UrlModal>
-
+    <Loading v-show="showLoading" :loading="loading"/>
     <iframe
+      v-show="!showLoading"
       ref="myIframe"
       v-if="urlStore.url && urlStore.subUrl"
       :key="urlStore.url+urlStore.subUrl+iframeKey"
