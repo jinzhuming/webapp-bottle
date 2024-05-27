@@ -69,6 +69,16 @@ async function createWindow() {
     );
   }
 
+  const onBlur=  () => {
+    // 检查是否其他窗口拥有焦点
+    let hasFocus = wins.some((w, index) => index !== 0 && w.isFocused());
+
+    // 如果没有其他窗口拥有焦点，则将焦点切换回主窗口
+    if (!hasFocus) {
+      wins[0].show();
+      wins[0].focus();
+    }
+  }
   wins.forEach((win, i) => {
     const externalDisplay = externalDisplays[i];
     win.setBounds({
@@ -82,17 +92,7 @@ async function createWindow() {
       event.preventDefault();
     });
 
-    win.on("blur", () => {
-      // 检查是否其他窗口拥有焦点
-      let hasFocus = wins.some((w, index) => index !== 0 && w.isFocused());
-
-      // 如果没有其他窗口拥有焦点，则将焦点切换回主窗口
-      if (!hasFocus) {
-        wins[0].show();
-        wins[0].focus();
-      }
-    });
-
+  
     if (VITE_DEV_SERVER_URL) {
       // #298
       win.loadURL(VITE_DEV_SERVER_URL);
@@ -127,11 +127,18 @@ async function createWindow() {
     });
   });
   
+  
+  
   ipcMain.handle("set-window-attr", (_, dataMap) => {
     if (!dataMap) return;
     wins.forEach((win, winIndex) => {
       if (winIndex !== dataMap.index) return;
       win.setAlwaysOnTop(dataMap["setAlwaysOnTop"], "screen-saver"); // Keep on top of other windows
+      if (dataMap.setAlwaysOnTop) {
+        win.on("blur", onBlur);
+      } else { 
+        win.off("blur", onBlur)
+      }
       win.setResizable(dataMap["setResizable"]); // Prevent resizing
       win.setMovable(dataMap["setMovable"]); // Prevent moving
       win.setFullScreen(dataMap["setFullScreen"]);
@@ -142,8 +149,6 @@ async function createWindow() {
 
     });
   });
-
-  
 }
 
 ipcMain.handle("setting-change", (_, val) => {

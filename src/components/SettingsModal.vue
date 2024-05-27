@@ -61,7 +61,14 @@ const formValues = ref<{
   setMovable: boolean;
   setFullScreen: boolean;
   setResizable: boolean;
-}>({} as any);
+}>({
+  setAlwaysOnTop: true,
+  setMovable: false,
+  setFullScreen: true,
+  setResizable: true,
+} as any);
+
+
 
 const onChange = () => {
   store.settingsModal[`${props.windowIndex}`] = {
@@ -100,7 +107,7 @@ onMounted(() => {
 });
 
 onMounted(() => {
-  formValues.value = (store.settingsModal[props.windowIndex] ?? {}) as any;
+  // formValues.value = (store.settingsModal[props.windowIndex] ?? {}) as any;
   window.ipcRenderer.invoke(
     "set-window-attr",
     unref({ ...formValues.value, index: props.windowIndex })
