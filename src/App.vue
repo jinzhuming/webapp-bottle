@@ -6,6 +6,7 @@ import { useUrlModalStore } from "./components/store";
 import UrlModal from "./components/UrlModal.vue";
 const urlStore = useUrlModalStore();
 const windowIndex = ref<number>(0);
+const iframeKey = ref<number>(0)
 
 const myIframe = ref<HTMLDivElement | null>(null);
 
@@ -24,19 +25,29 @@ window.ipcRenderer.on("setting-change", (_, e) => {
     "*"
   );
 });
+window.addEventListener('message', function (event){
+  if (event.data === 'REFRESH_IFRAME') { 
+  window.ipcRenderer.invoke("refresh");
+  }
+})
+window.ipcRenderer.on("refresh", (_, e) => {
+  iframeKey.value++
+})
+
+
 </script>
 
 <template>
   <div class="container">
-    <SettingsModal :windowIndex="windowIndex"></SettingsModal>
+    <SettingsModal  :windowIndex="windowIndex"></SettingsModal>
 
     <UrlModal :windowIndex="windowIndex"></UrlModal>
 
     <iframe
       ref="myIframe"
       v-if="urlStore.url && urlStore.subUrl"
-      :key="urlStore.url + urlStore.subUrl"
-      :src="windowIndex === 0 ? urlStore.url : urlStore.subUrl"
+      :key="urlStore.url+urlStore.subUrl+iframeKey"
+      :src="windowIndex === 0 ?urlStore.url :urlStore.subUrl"
       allowfullscreen
       allowpaymentrequest
       allowtransparency></iframe>

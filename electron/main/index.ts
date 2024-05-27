@@ -119,18 +119,31 @@ async function createWindow() {
   });
   globalShortcut.register("CommandOrControl + shift + p", () => {
     wins?.[0]?.webContents.send("open-setting-modal");
-  });
+  });  
 
-  ipcMain.handle("set-window-attr", (_, dataMap) => {
-    if (!dataMap) return;
+  ipcMain.handle("refresh", (_, val) => {
     wins.forEach((win) => {
-      win.setAlwaysOnTop(dataMap["setAlwaysOnTop"], "screen-saver", 1); // Keep on top of other windows
-      win.setResizable(dataMap["setResizable"] ?? false); // Prevent resizing
-      win.setMovable(dataMap["setMovable"] ?? false); // Prevent moving
-      win.setFullScreen(dataMap["setFullScreen"] ?? true);
-      win.setFocusable(true);
+      win.webContents.send("refresh", val);
     });
   });
+  
+  ipcMain.handle("set-window-attr", (_, dataMap) => {
+    if (!dataMap) return;
+    wins.forEach((win, winIndex) => {
+      if (winIndex !== dataMap.index) return;
+      win.setAlwaysOnTop(dataMap["setAlwaysOnTop"], "screen-saver"); // Keep on top of other windows
+      win.setResizable(dataMap["setResizable"]); // Prevent resizing
+      win.setMovable(dataMap["setMovable"]); // Prevent moving
+      win.setFullScreen(dataMap["setFullScreen"]);
+      win.setFocusable(true);
+      
+
+      
+
+    });
+  });
+
+  
 }
 
 ipcMain.handle("setting-change", (_, val) => {
