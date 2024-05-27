@@ -66,9 +66,7 @@ const formValues = ref<{
   setMovable: false,
   setFullScreen: true,
   setResizable: true,
-} as any);
-
-
+} as any)
 
 const onChange = () => {
   store.settingsModal[`${props.windowIndex}`] = {
