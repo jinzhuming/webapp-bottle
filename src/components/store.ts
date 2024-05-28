@@ -1,18 +1,24 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 export const useSettingsModalStore = defineStore(
   "settingsModalStore",
   () => {
-    const settingsModal = ref<Record<string, boolean>>({
+    const settingsModal = ref(
+     [{
       setAlwaysOnTop: true,
       setMovable: false,
       setFullScreen: true,
       setResizable: true,
-    });
+    },{
+      setAlwaysOnTop: true,
+      setMovable: false,
+      setFullScreen: true,
+      setResizable: true,
+    }]);
     return { settingsModal };
   },
-  { persist: true }
+  // { persist: true }
 );
 export const useUrlModalStore = defineStore(
   "urlModalStore",
@@ -23,3 +29,4 @@ export const useUrlModalStore = defineStore(
   },
   { persist: true }
 );
+

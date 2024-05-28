@@ -8,7 +8,6 @@ import Loading from './components/Loading.vue'
 const urlStore = useUrlModalStore();
 const windowIndex = ref<number>(0);
 const iframeKey = ref<number>(0)
-const loading = ref<boolean>(true)
 const timer = ref()
 const showLoading = ref(true)
 
@@ -48,8 +47,7 @@ window.ipcRenderer.on("refresh", (_, e) => {
 
 timer.value = setInterval(() => { 
   iframeKey.value++
-},2000)
-
+}, 2000)
 
 </script>
 
@@ -57,7 +55,7 @@ timer.value = setInterval(() => {
   <div class="container">
     <SettingsModal  :windowIndex="windowIndex"></SettingsModal>
     <UrlModal :windowIndex="windowIndex"></UrlModal>
-    <Loading v-show="showLoading" :loading="loading"/>
+    <Loading v-show="showLoading" :loading="showLoading"/>
     <iframe
       v-show="!showLoading"
       ref="myIframe"
