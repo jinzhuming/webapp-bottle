@@ -41,7 +41,7 @@ const timer = ref();
 
 setTimeout(() => {
     logoFinish.value = true;
-    let currentNumber = 0
+    let currentNumber = 1
   timer.value = setInterval(() => {
     currentNumber = currentNumber+8
       if (
@@ -88,7 +88,7 @@ watch(() => props.loading, () => {
   }
   .progress.ant-progress {
     position: absolute;
-    width: 32%;
+    width: 260px;
     .ant-progress-inner {
       overflow: initial;
       width: 100% !important;
