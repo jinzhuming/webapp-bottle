@@ -119,7 +119,7 @@ async function createWindow() {
   // });
   // globalShortcut.register("CommandOrControl + shift + p", () => {
   //   wins?.[0]?.webContents.send("open-setting-modal");
-  // });  
+  // });
 
   ipcMain.handle("refresh", (_, val) => {
     wins.forEach((win) => {
@@ -156,10 +156,13 @@ ipcMain.handle("setting-change", (_, val) => {
 });
 
 app.whenReady().then(createWindow);
-
+  
 app.whenReady().then(() => {
-  wins?.[0].webContents.openDevTools()
+  globalShortcut.register("CommandOrControl + shift + o", () => {
+    wins?.[0].webContents.openDevTools()
+  });  
 })
+
 
 app.on("window-all-closed", () => {
   wins = [];
