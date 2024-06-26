@@ -157,6 +157,10 @@ ipcMain.handle("setting-change", (_, val) => {
 
 app.whenReady().then(createWindow);
 
+app.whenReady().then(() => {
+  wins?.[0].webContents.openDevTools()
+})
+
 app.on("window-all-closed", () => {
   wins = [];
   if (process.platform !== "darwin") app.quit();
