@@ -37,6 +37,7 @@ window.addEventListener('message', function (event){
   }
   if (event.data === 'LOADING_OVER') { 
     showLoading.value = false
+    window.ipcRenderer.invoke("loadingOver");
   }
 })
 window.ipcRenderer.on("refresh", (_, e) => {

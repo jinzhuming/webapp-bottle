@@ -117,13 +117,24 @@ async function createWindow() {
   // globalShortcut.register("CommandOrControl + shift + k", () => {
   //   wins?.[0]?.webContents.send("open-url-setting-modal");
   // });
-  // globalShortcut.register("CommandOrControl + shift + p", () => {
-  //   wins?.[0]?.webContents.send("open-setting-modal");
-  // });  
+  globalShortcut.register("CommandOrControl + shift + p", () => {
+    wins?.[0]?.webContents.send("open-setting-modal");
+  });
+
+  // app.whenReady().then(() => {
+  //   globalShortcut.register("CommandOrControl + shift + o", () => {
+  //     wins?.[0].webContents.openDevTools()
+  //   });  
+  // })
 
   ipcMain.handle("refresh", (_, val) => {
     wins.forEach((win) => {
       win.webContents.send("refresh", val);
+    });
+  });
+  ipcMain.handle("loadingOver", (_, val) => {
+    wins.forEach((win) => {
+      globalShortcut.unregister("CommandOrControl + shift + p");
     });
   });
   
