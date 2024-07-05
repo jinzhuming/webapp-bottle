@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import Vue, { computed, ref, watch } from "vue";
+import Vue, { computed, onUnmounted, ref, watch } from "vue";
 import bottles from "@/assets/images/bottles.png";
 import { format } from "date-fns";
 import { IconChineseLogo, IconLoadingWave, IconActionLogo } from "./Icon";
@@ -61,6 +61,9 @@ watch(() => props.loading, () => {
     progressNum.value = 100;
     clearInterval(timer.value);
   }
+})
+onUnmounted(() => { 
+  clearInterval(timer.value);
 })
 
 
