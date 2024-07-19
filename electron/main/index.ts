@@ -121,11 +121,11 @@ async function createWindow() {
     wins?.[0]?.webContents.send("open-setting-modal");
   });
 
-  // app.whenReady().then(() => {
-  //   globalShortcut.register("CommandOrControl + shift + o", () => {
-  //     wins?.[0].webContents.openDevTools()
-  //   });  
-  // })
+  app.whenReady().then(() => {
+    globalShortcut.register("CommandOrControl + shift + o", () => {
+      wins?.[0].webContents.openDevTools()
+    });  
+  })
 
   ipcMain.handle("refresh", (_, val) => {
     wins.forEach((win) => {
