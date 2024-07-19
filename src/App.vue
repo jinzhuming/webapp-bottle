@@ -45,11 +45,9 @@ window.ipcRenderer.on("refresh", (_, e) => {
   iframeKey.value++
 })
 
-
-
 timer.value = setInterval(() => { 
   iframeKey.value++
-}, 2000)
+}, 3000)
 
 </script>
 
@@ -59,9 +57,8 @@ timer.value = setInterval(() => {
     <UrlModal :windowIndex="windowIndex"></UrlModal>
     <Loading :key="+showLoading" v-show="showLoading" :loading="showLoading"/>
     <iframe
-      v-show="!showLoading"
+      v-show="!showLoading && urlStore.url && urlStore.subUrl"
       ref="myIframe"
-      v-if="urlStore.url && urlStore.subUrl"
       :key="urlStore.url+urlStore.subUrl+iframeKey"
       :src="windowIndex === 0 ?urlStore.url :urlStore.subUrl"
       allowfullscreen
