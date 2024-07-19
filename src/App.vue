@@ -38,6 +38,7 @@ window.addEventListener('message', function (event){
   if (event.data === 'LOADING_OVER') { 
     showLoading.value = false
     window.ipcRenderer.invoke("loadingOver");
+    iframeKey.value++
   }
 })
 window.ipcRenderer.on("refresh", (_, e) => {
@@ -56,7 +57,7 @@ timer.value = setInterval(() => {
   <div class="container">
     <SettingsModal  :windowIndex="windowIndex"></SettingsModal>
     <UrlModal :windowIndex="windowIndex"></UrlModal>
-    <Loading v-show="showLoading" :loading="showLoading"/>
+    <Loading :key="+showLoading" v-show="showLoading" :loading="showLoading"/>
     <iframe
       v-show="!showLoading"
       ref="myIframe"
