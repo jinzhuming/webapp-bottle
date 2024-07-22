@@ -36,33 +36,39 @@ const props = defineProps<{
 
 const progressNum = ref(0);
 const logoFinish = ref(false);
-const timer = ref();
+const timer = ref(null);
 
 
 setTimeout(() => {
-    logoFinish.value = true;
-    let currentNumber = 1
-  timer.value = setInterval(() => {
-    currentNumber = currentNumber+8
-      if (
-        currentNumber >= 100 ||
-        progressNum.value === 100
-      ) {
-        return;
-      } else {
-        progressNum.value = currentNumber;
-      }
-    }, 24000);
-  }, 2000);
+  logoFinish.value = true;
+  progressNum.value = 1
+}, 200);
+
+timer.value = setInterval(() => {
+  let currentNumber = 0
+    currentNumber += 8
+    if (
+      currentNumber >= 100
+    ) {
+      currentNumber = 100; // 确保不会超过100
+      clearInterval(timer.value); // 清除定时器
+    } else {
+      progressNum.value = currentNumber;
+    }
+    console.log("加载进度", progressNum.value)
+    }, 2000);
 
 
 watch(() => props.loading, () => { 
+  console.log('是否loading状态',!props.loading)
   if (!props.loading) {
     progressNum.value = 100;
     clearInterval(timer.value);
   }
-})
+}, { immediate: true })
+
 onUnmounted(() => { 
+  console.log('离开loading页面')
   clearInterval(timer.value);
 })
 

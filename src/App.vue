@@ -33,11 +33,13 @@ window.addEventListener('message', function (event){
   window.ipcRenderer.invoke("refresh");
   }
   if (event.data === 'ONMOUNTED') { 
-    timer.value &&  clearInterval(timer.value);
+    timer.value && clearInterval(timer.value);
+    console.log('ONMOUNTED,iframe加载完毕')
   }
   if (event.data === 'LOADING_OVER') { 
     showLoading.value = false
     window.ipcRenderer.invoke("loadingOver");
+    console.log('LOADING_OVER,接口请求成功')
   }
 })
 window.ipcRenderer.on("refresh", (_, e) => {
@@ -46,6 +48,7 @@ window.ipcRenderer.on("refresh", (_, e) => {
 
 timer.value = setInterval(() => { 
   iframeKey.value++
+  console.log("持续刷新页面", iframeKey.value)
 }, 3000)
 
 </script>
@@ -54,7 +57,7 @@ timer.value = setInterval(() => {
   <div class="container">
     <SettingsModal  :windowIndex="windowIndex"></SettingsModal>
     <UrlModal :windowIndex="windowIndex"></UrlModal>
-    <Loading :key="+showLoading" v-show="showLoading" :loading="showLoading"/>
+    <Loading :key="+showLoading" v-if="showLoading" :loading="showLoading"/>
     <iframe
       v-show="!showLoading"
       ref="myIframe"
