@@ -38,42 +38,39 @@ const progressNum = ref(0);
 const logoFinish = ref(false);
 const timer = ref(null);
 
-
 setTimeout(() => {
   logoFinish.value = true;
-  progressNum.value = 1
+  progressNum.value = 1;
 }, 200);
 
+let currentNumber = 0;
 timer.value = setInterval(() => {
-  let currentNumber = 0
-    currentNumber += 8
-    if (
-      currentNumber >= 100
-    ) {
-      currentNumber = 100; // 确保不会超过100
-      clearInterval(timer.value); // 清除定时器
-    } else {
-      progressNum.value = currentNumber;
-    }
-    console.log("加载进度", progressNum.value)
-    }, 2000);
-
-
-watch(() => props.loading, () => { 
-  console.log('是否loading状态',!props.loading)
-  if (!props.loading) {
-    progressNum.value = 100;
-    clearInterval(timer.value);
+  currentNumber = Math.ceil(currentNumber + 6.8);
+  if (currentNumber >= 100) {
+    currentNumber = 100; // 确保不会超过100
+    clearInterval(timer.value); // 清除定时器
+  } else {
+    progressNum.value = currentNumber;
   }
-}, { immediate: true })
+  console.log("加载进度", progressNum.value);
+}, 4000);
 
-onUnmounted(() => { 
-  console.log('离开loading页面')
+watch(
+  () => props.loading,
+  () => {
+    console.log("是否loading状态", !props.loading);
+    if (!props.loading) {
+      progressNum.value = 100;
+      clearInterval(timer.value);
+    }
+  },
+  { immediate: true }
+);
+
+onUnmounted(() => {
+  console.log("离开loading页面");
   clearInterval(timer.value);
-})
-
-
-
+});
 </script>
 
 <style lang="less">
