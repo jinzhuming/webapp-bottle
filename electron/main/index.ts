@@ -81,6 +81,19 @@ async function createWindow() {
   }
   wins.forEach((win, i) => {
     const externalDisplay = externalDisplays[i];
+
+
+    win.webContents.session.webRequest.onHeadersReceived({ urls: [ "*://*/*" ] },
+    (d, c)=>{
+      if(d.responseHeaders['X-Frame-Options']){
+        delete d.responseHeaders['X-Frame-Options'];
+      } else if(d.responseHeaders['x-frame-options']) {
+        delete d.responseHeaders['x-frame-options'];
+      }
+ 
+      c({cancel: false, responseHeaders: d.responseHeaders});
+    }
+  )
     win.setBounds({
       x: externalDisplay.bounds.x,
       y: externalDisplay.bounds.y,
