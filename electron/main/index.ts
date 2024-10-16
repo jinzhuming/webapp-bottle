@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import os from "node:os";
 import { globalShortcut } from "electron";
+import { exec } from "node:child_process";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -68,6 +69,24 @@ async function createWindow() {
       })
     );
   }
+
+  //关机 
+  function shutdownWindow() {
+    const order = process.platform === 'win32' ? "shutdown -s -t 0":'shutdown -h now'
+    let command = exec(order, function (err, stdout, stderr) {
+      if (err || stderr) {
+        console.log("shutdown failed" + err + stderr);
+      }
+    });
+    command.stdin.end();
+    command.on("close", function (code) {
+      console.log("shutdown", code);
+    });
+  }
+
+  ipcMain.handle("shutdown", (_, val) => {
+    shutdownWindow()
+  });
 
   const onBlur=  () => {
     // 检查是否其他窗口拥有焦点
