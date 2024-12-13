@@ -58,7 +58,7 @@ timer.value = setInterval(() => {
 watch(
   () => props.loading,
   () => {
-    console.log("是否loading状态", !props.loading);
+    console.log("是否loading状态", props.loading);
     if (!props.loading) {
       progressNum.value = 100;
       clearInterval(timer.value);
