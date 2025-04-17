@@ -11,7 +11,7 @@ permissions:
 jobs:
   job1:
     name: Check Not Allowed File Changes
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     outputs:
       markdown_change: ${{ steps.filter_markdown.outputs.change }}
       markdown_files: ${{ steps.filter_markdown.outputs.change_files }}
@@ -68,7 +68,7 @@ jobs:
 
   job2:
     name: Lint Markdown
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: job1
     if: ${{ always() && needs.job1.outputs.markdown_change == 'true' }}
     steps:
