@@ -34,7 +34,7 @@ window.addEventListener('message', function (event){
   }
   if (event.data === 'ONMOUNTED') { 
     timer.value && clearInterval(timer.value);
-    console.log('ONMOUNTED,iframe加载完毕')
+    console.log('ONMOUNTED,iframe加载完毕 ')
   }
   if (event.data === 'LOADING_OVER') { 
     showLoading.value = false
